@@ -1,0 +1,4 @@
+{{Reise|title=${TITLE}|von=${VON}|nach=${NACH}|
+${CONTENT}
+}}
+

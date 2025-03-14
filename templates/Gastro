@@ -1,0 +1,15 @@
+{{Gastro|price={{#vardefineecho:price|${Preis}}}|title={{#vardefineecho:laden|${Laden}}}|
+${Content}
+{{InternalImage|file={{#var:date}}_{{#var:laden}}.jpg}}
+{{#subobject:
+ |Has date = {{#var:date}}
+ |Has rechnung = Ausgabe
+ |Has source = ${Source}
+ |Has receiver = {{#var:laden}}
+ |Has price = {{#var:price}}
+ |Has tag = Gastro
+ |Has description = 
+* 
+}}
+}}
+

@@ -1,0 +1,5 @@
+{{#subobject:
+ |Has date = {{#vardefineecho:date|${Date}}}
+ |Has log = Tagebuch
+${Tags}
+ |Has agenda =

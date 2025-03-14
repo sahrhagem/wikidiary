@@ -1,0 +1,33 @@
+== Description ==
+{{Description}}
+{{#vardefine:id|{{PAGENAME}}}}
+{{#set:
+ Has description=
+{{InternalImagePortrait|file={{#var:id}}.jpg}}
+}}
+
+
+== Details ==
+* Author:[[Has author::${Author}]]
+* ISBN:[[Has ISBN::${ISBN}]]
+* Pages:[[Has pages::${Pages}]]
+* Language:[[Has language::${Language}]]
+* Cover:[[Has cover_url::${Cover}]]
+
+== Details ==
+* ID: [[Has id::{{#var:id}}]]
+* Wert: [[Has wert::${Wert}]]
+* Store: [[Has store::${Store}]]
+* Gewicht: [[Has weight::${Gewicht}]]
+* size: [[Has size::-]]
+* Anzahl: [[Has anzahl::1]]
+* Tag: [[Has tag::Book]]
+* Date added:[[Has date_added::${Date}]]
+
+== Diary ==
+{{Diary Tag}}
+
+[[Category:Book]]
+[[Category:Literature]]
+[[Category:Besitz]]
+

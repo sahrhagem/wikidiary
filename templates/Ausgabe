@@ -1,0 +1,11 @@
+{{#subobject:
+ |Has date = {{#var:date}}
+ |Has rechnung = Ausgabe
+ |Has source = ${Source}
+ |Has receiver = ${Laden}
+ |Has price = ${Preis}
+ |Has tag = ${TAG}
+ |Has description = 
+* 
+}}
+

@@ -1,0 +1,16 @@
+{{Einkauf|price={{#vardefineecho:price|${Preis}}}|laden={{#vardefineecho:laden|${Laden}}}|
+${Content}
+{{InternalImage|file={{#var:date}}_{{#var:laden}}.jpg}}
+{{InternalImage|file={{#var:date}}_{{#var:laden}}_Bon.jpg}}
+{{#subobject:
+ |Has date = {{#var:date}}
+ |Has rechnung = Ausgabe
+ |Has source = ${Source}
+ |Has receiver = {{#var:laden}}
+ |Has price = {{#var:price}}
+ |Has tag = ${TAG}
+ |Has description = 
+* 
+}}
+}}
+

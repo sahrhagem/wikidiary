@@ -1,0 +1,14 @@
+{{Fahrt|title=${TITLE}|
+{{#subobject:
+ |Has date = {{#var:date}}
+ |Has rechnung = Ausgabe
+ |Has source = Kreditkarte
+ |Has receiver = ${FIRMA}
+ |Has price = ${PREIS}
+ |Has tag = ${TAG}
+ |Has description = 
+* 
+}}
+${CONTENT}
+}}
+

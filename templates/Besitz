@@ -1,0 +1,26 @@
+== Description ==
+{{Description}}
+{{#vardefine:id|{{PAGENAME}}}}
+{{#set:
+ Has description=
+${Content}
+}}
+
+== Details ==
+
+* ID: [[Has id::{{#var:id}}]]
+* Wert: [[Has wert::-]]
+* Firma: [[Has firma::Lee]]
+* Size: [[Has size::31x32]]
+* Gewicht: [[Has weight::${Gewicht}]]
+* Gewicht: [[Has anzahl::${Anzahl}]] 
+${Tags}
+${Date}
+
+== Diary ==
+{{Diary Tag}}
+
+
+[[Category:Besitz]]
+[[Category:Kleidung]]
+
