@@ -5,6 +5,10 @@ from botocore.client import Config
 from wikidiary import Wiki
 import os
 
+from dotenv import load_dotenv
+# Load environment variables
+load_dotenv()
+
 # MinIO Configuration
 MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT')
 ACCESS_KEY = os.getenv('ACCESS_KEY')
