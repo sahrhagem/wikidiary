@@ -112,6 +112,8 @@ class DiaryBox:
     def __init__(self):
         print("")
         self.tag_array = {}
+        self.array = []
+        self.box_array = []
         self.content = ""
 #    def __init__(self,type):
 #        self.type = type
@@ -459,6 +461,7 @@ class DiaryBox:
         tags = ""
         for key in self.tag_array.keys():
             values = self.tag_array[key]
+            print(f"tags_toString: {len(values)}")
             for value in values:
                 tags = tags + " |Has " + key + " = " + value + "\n"
         return(tags)
@@ -492,6 +495,7 @@ class DiaryBox:
                 b.date_string = self.date_string
                 #print("Add Tag " + b.date_string)
                 self.array.append(b)
+                # print(f"expandTags: Array Length: {len(self.array)}")
 
 
 
@@ -788,20 +792,28 @@ class DiarySet:
                 #if(len(box.box_array)>0):
                 #    self.create_from_array(box.box_array)
     def tags_from_array(self,box_array):
+        # print(f"tags_toString (ds): Tag Array length: {len(box_array)}")
+
         for box in box_array:
             if box.type=="Tag":
                 self.tags.append(box)
+                # print(f"tags_toString (ds): Tag found: {len(self.tags)} - {box.toString()}")
             else:
-                self.tags.append(box.tags_toString())
+                #self.tags.append(box.tags_toString())
                 if(len(box.box_array)>0):
                     self.tags_from_array(box.box_array)
+                    # print(f"tags_toString (ds): Tags from tags array")
+
         #print("Diaryset::" + self.tags_toString())
 
     def tags_toString(self):
         txt = ""
+        print(f"tags_toString (ds): Number of tags: {len(self.tags)}")
         for tag in self.tags:
             if type(tag) is str:
+                print("Print Tag")
                 txt = txt + tag
             else:
+                print("Print Found Tag")
                 txt = txt + tag.toString()
         return(txt)

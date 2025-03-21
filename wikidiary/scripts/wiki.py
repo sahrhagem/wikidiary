@@ -3,6 +3,7 @@ import yaml
 import os
 from datetime import datetime
 from dotenv import load_dotenv
+import boto3
 
 # Load environment variables
 load_dotenv()
@@ -15,6 +16,7 @@ WIKI_USER = os.getenv('WIKI_USER')
 WIKI_PW = os.getenv('WIKI_PW')
 
 a = (WIKI_BASIC_AUTH_USER, WIKI_BASIC_AUTH_PW)
+
 
 def replaceumlaut(txt):
     txt = txt.replace("Ä","AE")
@@ -105,6 +107,47 @@ class Wiki:
 
             except yaml.YAMLError as exc:
                 print(exc)
+
+    def download_data_s3(self):
+        with open("meta/urls.yaml", "r") as stream:
+            try:
+                urls = yaml.safe_load(stream)
+
+                # MinIO Configuration
+                MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT')
+                ACCESS_KEY = os.getenv('ACCESS_KEY')
+                SECRET_KEY = os.getenv('SECRET_KEY')
+                BUCKET_NAME = os.getenv('BUCKET_NAME_WIKIDIARY')
+
+
+                # Initialize MinIO S3 Client
+                s3_client = boto3.client(
+                    "s3",
+                    endpoint_url=MINIO_ENDPOINT,  # Custom MinIO endpoint
+                    aws_access_key_id=ACCESS_KEY,
+                    aws_secret_access_key=SECRET_KEY,
+                )
+
+
+                for key in urls:
+                    r = requests.get(urls[key], allow_redirects=True,auth = a)
+                    KEY_PATH = f"data/download/{key}.csv"
+
+                    try:
+                        s3_client.put_object(
+                            Bucket=BUCKET_NAME,
+                            Key=KEY_PATH,
+                            Body=r.content,  # Directly upload raw content
+                            ContentType="text/csv"
+                        )
+
+                        print(f"File '{key}' uploaded as '{KEY_PATH}' in bucket '{BUCKET_NAME}'.")
+                    except Exception as e:
+                        print(f"Error: {e}")
+
+            except yaml.YAMLError as exc:
+                print(exc)
+
 
     def backup(self,dir):
         ### Create directory structure

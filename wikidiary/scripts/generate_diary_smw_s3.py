@@ -35,12 +35,10 @@ def list_json_files(prefix=r"messages/raw/year=2025/month=03/day=03/"):
 
     if "Contents" in response:
         json_files = [obj["Key"] for obj in response["Contents"] if obj["Key"].endswith(".json")]
+        print(f"{len(json_files)} files found in bucket")
         return json_files
     return []
 
-# Example usage
-json_files = list_json_files("messages/")  # Get all JSON files in "messages/" folder
-#print(json_files)
 
 
 def fetch_json_from_minio(file_key):
@@ -83,6 +81,24 @@ class TelegramMessageJSON:
 		return(path)
 
 
+
+# Check if an argument is provided
+if len(sys.argv) < 2:
+    date_choice = "2025-03-01"
+else:
+    # Get the input argument
+    date_choice  = sys.argv[1]
+
+year, month, day = date_choice.split("-")
+
+prefix = f"messages/raw/year={year}/month={month}/day={day}/"
+print(f"Searching messages for: {year}-{month}-{day} in {prefix}")
+
+# Example usage
+json_files = list_json_files(prefix)  # Get all JSON files in "messages/" folder
+#print(json_files)
+
+
 # Example usage
 messages = []
 for file_key in json_files:
@@ -92,12 +108,6 @@ for file_key in json_files:
 	#print(f"Content of {file_key} ({type(msg)}):\n {msg.id}: {msg.date}\n{msg.text}")
 
 
-# Check if an argument is provided
-if len(sys.argv) < 2:
-    date_choice = "2025-03-01"
-else:
-    # Get the input argument
-    date_choice  = sys.argv[1]
 
 ###
 # Filtering messages by Date

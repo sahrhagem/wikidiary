@@ -1,4 +1,6 @@
 #!/bin/bash
+export PATH="$HOME/.local/bin:$PATH" #Finding poetry
+
 
 echo "Running pipeline for $1"
 echo "Generating SMW Text..."
