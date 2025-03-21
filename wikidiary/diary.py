@@ -461,7 +461,7 @@ class DiaryBox:
         tags = ""
         for key in self.tag_array.keys():
             values = self.tag_array[key]
-            print(f"tags_toString: {len(values)}")
+            # print(f"tags_toString: {len(values)}")
             for value in values:
                 tags = tags + " |Has " + key + " = " + value + "\n"
         return(tags)
@@ -808,12 +808,12 @@ class DiarySet:
 
     def tags_toString(self):
         txt = ""
-        print(f"tags_toString (ds): Number of tags: {len(self.tags)}")
+        # print(f"tags_toString (ds): Number of tags: {len(self.tags)}")
         for tag in self.tags:
             if type(tag) is str:
-                print("Print Tag")
+                # print("Print Tag")
                 txt = txt + tag
             else:
-                print("Print Found Tag")
+                # print("Print Found Tag")
                 txt = txt + tag.toString()
         return(txt)

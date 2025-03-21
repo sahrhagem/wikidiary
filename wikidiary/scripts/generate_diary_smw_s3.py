@@ -35,7 +35,7 @@ def list_json_files(prefix=r"messages/raw/year=2025/month=03/day=03/"):
 
     if "Contents" in response:
         json_files = [obj["Key"] for obj in response["Contents"] if obj["Key"].endswith(".json")]
-        print(f"{len(json_files)} files found in bucket")
+        # print(f"{len(json_files)} files found in bucket")
         return json_files
     return []
 
