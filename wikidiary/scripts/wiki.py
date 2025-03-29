@@ -197,3 +197,16 @@ class Wiki:
         },allow_redirects=True,auth = a)
 
         return response.json()
+
+    def upload_wiki_page(self,page_name,new_content):
+        """Prepend new content to the existing wiki page."""
+        # Edit the page
+        response = self.S.post(URL, data={
+            "action": "edit",
+            "format": "json",
+            "title": page_name,
+            "text": new_content,
+            "token": self.CSRF_TOKEN
+        },allow_redirects=True,auth = a)
+
+        return response.json()

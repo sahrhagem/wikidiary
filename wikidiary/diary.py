@@ -115,6 +115,7 @@ class DiaryBox:
         self.array = []
         self.box_array = []
         self.content = ""
+        self.fact_tags = []
 #    def __init__(self,type):
 #        self.type = type
     def setFromTelegramMessage(self,message):
