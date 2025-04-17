@@ -78,6 +78,8 @@ class DiaryBox:
     speaker = []
     nach=""
     fact_tags = []
+    id = ""
+    timestamp = ""
 
     # reading
     page_start=""
@@ -116,6 +118,10 @@ class DiaryBox:
         self.box_array = []
         self.content = ""
         self.fact_tags = []
+        self.id = ""
+        self.count = ""
+        self.timestamp = ""
+
 #    def __init__(self,type):
 #        self.type = type
     def setFromTelegramMessage(self,message):
@@ -123,9 +129,11 @@ class DiaryBox:
         self.media = message.media
         #self.date = message.date  + timedelta(hours=2)
         self.date = message.date.astimezone(tz.tzlocal())
+        self.timestamp = datetime.strftime(self.date,"%Y-%m-%dT%H:%M")
         self.date_string = datetime.strftime(self.date,"%Y-%m-%d")
         self.time = datetime.strftime(self.date,"%H:%M")
         self.message = message
+        self.id = message.id
         self.box_from_text(message.text)
         #self.tag_array = ""
 
@@ -344,23 +352,23 @@ class DiaryBox:
             print("Error in " + self.title)
 
     def postSetup(self):
+        transport_types = ["Auto","Bus","Zug","STR","U-Bahn","S-Bahn","Flug"]
+        message_metadata = f"id={self.id}|timestamp={self.timestamp}"
+        pre_header = "{{" + f"{self.type}|{message_metadata}"
+
         if self.type=="Arbeit":
-            self.header = "{{Arbeit|"+"\n"
+            self.header = f"{pre_header}|\n"
             if self.ID =="":
                 self.ID = "Arbeit"
             self.title = "Arbeit"
         elif self.type=="Einkauf":
-            self.header = "{{Einkauf|laden="+self.laden+ "|price="+ str(self.price) + "|\n"
+            self.header = f"{pre_header}|laden={self.laden}|price={str(self.price)}|\n"
             self.title = self.laden
-        elif self.type=="Event":
-            self.header = "{{Event|title="+self.title+"|\n"
-        elif self.type=="Information":
-            self.header = "{{Information|title="+self.title+"|\n"
         elif self.type=="Fact":
             if self.source != "Lastschrift":
-                self.header = "{{Fact|title="+self.title+ "|tags="+ ','.join(self.fact_tags) +"|source="+ self.source +  "|\n"
+                self.header = f"{pre_header}|title="+self.title+ "|tags="+ ','.join(self.fact_tags) +"|source="+ self.source +  "|\n"
             else:
-                self.header = "{{Fact|title="+self.title+ "|tags="+ ','.join(self.fact_tags) +"|source="+ "" +  "|\n"    
+                self.header = f"{pre_header}|title="+self.title+ "|tags="+ ','.join(self.fact_tags) +"|source="+ "" +  "|\n"    
         elif self.type=="Gallery":
             self.photo = True
             date_string = self.date.strftime("%Y-%m-%d")
@@ -368,77 +376,38 @@ class DiaryBox:
             self.add_to_tags(key="gallery",value=img_name)
         elif self.type=="Gastro":
             self.title = self.laden
-        elif self.type=="Gedanken":
-            self.header = "{{Gedanken|title="+self.title+"|\n"
-        elif self.type=="Haushalt":
-            self.header = "{{Haushalt|title="+self.title+"|\n"
-        elif self.type=="Krankheit":
-            self.header = "{{Krankheit|title="+self.title+"|\n"
-        elif self.type=="Kochen":
-            self.header = "{{Kochen|title="+self.title+"|\n"
         elif self.type=="Lesen":
             self.pages_read = float(self.page_end)-float(self.page_start) + 1
-            self.header = "{{Lesen|title="+self.title+"|start=" + self.start + "|end=" + self.end + "|page_start=" + self.page_start + "|page_end=" + self.page_end + "|pages_read=" + str(self.pages_read) + "|\n"
+            self.header = f"{pre_header}|title="+self.title+"|start=" + self.start + "|end=" + self.end + "|page_start=" + self.page_start + "|page_end=" + self.page_end + "|pages_read=" + str(self.pages_read) + "|\n"
             #self.precontent = "* " + self.start+"\t"+self.end+"\t"+self.page_start+"\t"+self.page_end+"\n"
-        elif self.type=="Meeting":
-            self.header = "{{Meeting|title="+self.title+"|\n"
         elif self.type=="Migraene":
-            self.header = "{{Migraene|\n"
+            self.header = f"{pre_header}|\n"
             self.title = "Migraene"
         elif self.type=="Migräne":
-            self.header = "{{Migraene|\n"
+            self.header = "{{" + f"Migraene|{message_metadata}|\n"
             self.title = "Migraene"
-        elif self.type=="Place":
-            self.header = "{{Place|title="+self.title+"|\n"
         elif self.type=="Podcast":
             self.title = correct_title(self.title)
-            self.header = "{{Podcast|title="+self.title+"|folge="+self.folge+"|\n"
-        elif self.type=="Projekt":
-            self.header = "{{Projekt|title="+self.title+"|\n"
-        elif self.type=="Spaziergang":
-            self.header = "{{Spaziergang|title="+self.title+"|\n"
-        elif self.type=="Song":
-            self.header = "{{Song|title="+self.title+"|\n"
-        elif self.type=="Spiel":
-            self.header = "{{Spiel|title="+self.title+"|\n"
-        elif self.type=="Sport":
-            self.header ="{{Sport|title="+self.title+"|\n"
-        elif self.type=="Traum":
-            self.header = "{{Traum|title="+self.title+"|\n"
+            self.header = f"{pre_header}|title="+self.title+"|folge="+self.folge+"|\n"
         elif self.type=="Reise":
-            self.header = "{{Reise|von="+self.von+"|nach="+self.nach+"|title=Von "+self.von+" nach "+self.nach+"|abfahrt="+self.abfahrt+"|ankunft="+self.ankunft+"|\n"
+            self.header = f"{pre_header}|von="+self.von+"|nach="+self.nach+"|title=Von "+self.von+" nach "+self.nach+"|abfahrt="+self.abfahrt+"|ankunft="+self.ankunft+"|\n"
             self.title = "Reise_" + self.von + "_" + self.nach
         elif self.type=="Tags":
             self.expandTags()
         elif self.type=="Transaktion":
-            self.header = "{{Transaktion|von="+self.von+"|nach="+self.nach+"|verwendungszweck="+self.verwendungszweck+"|preis = "+str(self.price)+"|title=Von "+self.von+" nach "+self.nach+"|\n"
+            self.header = f"{pre_header}|von="+self.von+"|nach="+self.nach+"|verwendungszweck="+self.verwendungszweck+"|preis = "+str(self.price)+"|title=Von "+self.von+" nach "+self.nach+"|\n"
             self.title = "Transaktion_" + self.von + "_" + self.nach
         elif self.type=="Video":
-            self.header = "{{Video|type="+self.type_text+"|title="+self.title+"|\n"
-        elif self.type=="Zug":
-            self.header = "{{Zug|von="+self.von+"|nach="+self.nach+"|ankunft="+self.ankunft+"|abfahrt="+self.abfahrt+"|title=Von "+self.von+" nach "+self.nach+"|linie="+self.linie+"|verspätung="+self.verspätung+"|richtung="+self.richtung+"|special="+self.special+"|\n"
-            self.title =  "Zug_" + self.von + "_" + self.nach
-        elif self.type=="STR":
-            self.header = "{{STR|von="+self.von+"|nach="+self.nach+"|ankunft="+self.ankunft+"|abfahrt="+self.abfahrt+"|title=Von "+self.von+" nach "+self.nach+"|linie="+self.linie+"|verspätung="+self.verspätung+"|richtung="+self.richtung+"|\n"
-            self.title =  "STR_" + self.von + "_" + self.nach
-        elif self.type=="S-Bahn":
-            self.header = "{{S-Bahn|von="+self.von+"|nach="+self.nach+"|ankunft="+self.ankunft+"|abfahrt="+self.abfahrt+"|title=Von "+self.von+" nach "+self.nach+"|linie="+self.linie+"|verspätung="+self.verspätung+"|richtung="+self.richtung+"|\n"
-            self.title =  "S-Bahn_" + self.von + "_" + self.nach
-        elif self.type=="U-Bahn":
-            self.header = "{{U-Bahn|von="+self.von+"|nach="+self.nach+"|ankunft="+self.ankunft+"|abfahrt="+self.abfahrt+"|title=Von "+self.von+" nach "+self.nach+"|linie="+self.linie+"|verspätung="+self.verspätung+"|richtung="+self.richtung+"|\n"
-            self.title =  "U-Bahn_" + self.von + "_" + self.nach
-        elif self.type=="Bus":
-            self.header = "{{Bus|von="+self.von+"|nach="+self.nach+"|ankunft="+self.ankunft+"|abfahrt="+self.abfahrt+"|title=Von "+self.von+" nach "+self.nach+"|linie="+self.linie+"|verspätung="+self.verspätung+"|richtung="+self.richtung+"|\n"
-            self.title =  "Bus_" + self.von + "_" + self.nach
-        elif self.type=="Flug":
-            self.header = "{{Flug|von="+self.von+"|nach="+self.nach+"|ankunft="+self.ankunft+"|abfahrt="+self.abfahrt+"|title=Von "+self.von+" nach "+self.nach+"|linie="+self.linie+"|verspätung="+self.verspätung+"|richtung="+self.richtung+"|\n"
-            self.title =  "Flug_" + self.von + "_" + self.nach
-        elif self.type=="Auto":
-            self.header = "{{Auto|von="+self.von+"|nach="+self.nach+"|ankunft="+self.ankunft+"|abfahrt="+self.abfahrt+"|title=Von "+self.von+" nach "+self.nach+"|linie="+self.linie+"|verspätung="+self.verspätung+"|richtung="+self.richtung+"|\n"
-            self.title =  "Auto_" + self.von + "_" + self.nach
+            self.header = f"{pre_header}|type="+self.type_text+"|title="+self.title+"|\n"
+        elif self.type in transport_types:
+            self.header = f"{pre_header}|von={self.von}|nach={self.nach}|ankunft={self.ankunft}|abfahrt={self.abfahrt}|title=Von {self.von} nach {self.nach}|linie={self.linie}|verspätung={self.verspätung}|richtung={self.richtung}|special={self.special}|\n"
+            self.title =  f"{self.type}_{self.von}_{self.nach}"
         elif self.type=="Vortrag":
-            self.header = "{{Vortrag|title="+self.title+ "|speaker="+ ','.join(self.speaker) +"|\n"
+            self.header = f"{pre_header}|title="+self.title+ "|speaker="+ ','.join(self.speaker) +"|\n"
             self.speaker = []
+        else:
+            self.header = f"{pre_header}|title={self.title}|\n"        
+        
         if self.type != "Podcast":
             self.upload = True
 
@@ -523,7 +492,6 @@ class DiaryBox:
         elif self.type=="Tag":
             msg = self.generate_tag()
         elif self.type=="":
-            #self.generate_reise()
             msg = self.content
         else:
             msg = self.generate_general()
@@ -587,11 +555,6 @@ class DiaryBox:
             #print("upload: " + img_name)
             wiki.upload_file("./test.jpg",img_name)
 
-    def generate_arbeit(self):
-        #self.content = self.content + self.internalImage()
-        message = self.header + self.content+ self.footer
-        print(message)
-        return message
     def generate_ausgabe_from_template(self):
         txt = Path('./templates/Ausgabe').read_text()
         txt = txt.replace("${Preis}",str(self.price))
@@ -599,11 +562,7 @@ class DiaryBox:
         txt = txt.replace("${TAG}",self.tag)
         txt = txt.replace("${Source}",self.source)
         print(txt)
-    def generate_einkauf(self):
-        #self.content = self.content + self.internalImage()
-        message = self.header + self.content+ self.footer
-        print(message)
-        return message
+
     def generate_einkauf_from_template(self):
         if len(self.box_array) > 0:
             for box in self.box_array:
@@ -612,20 +571,18 @@ class DiaryBox:
                     self.content = self.content + box.toString() + "\n"
 
         txt = Path('./templates/Einkauf').read_text()
+        txt = txt.replace("${ID}",self.id)
+        txt = txt.replace("${TIMESTAMP}",self.timestamp)
         txt = txt.replace("${Preis}",str(self.price))
         txt = txt.replace("${Laden}",self.laden)
         txt = txt.replace("${TAG}",self.tag)
         txt = txt.replace("${Content}",self.content.strip())
         txt = txt.replace("${Source}",self.source)
+        txt = txt.replace("${COUNT}",self.count)
         if(self.noPhoto):
             txt = txt.replace("{{InternalImage|file={{#var:date}}_{{#var:laden}}.jpg}}","")
             txt = txt.replace("{{InternalImage|file={{#var:date}}_{{#var:laden}}_Bon.jpg}}","")
         return(txt)
-    def generate_event(self):
-        self.content = self.content + self.internalImage()
-        message = self.header + self.content+ self.footer
-        print(message)
-        return message
     def generate_gastro_from_template(self):
         if len(self.box_array) > 0:
             for box in self.box_array:
@@ -637,16 +594,15 @@ class DiaryBox:
                         print("Error: " + self.title)
 
         txt = Path('./templates/Gastro').read_text()
+        txt = txt.replace("${ID}",self.id)
+        txt = txt.replace("${TIMESTAMP}",self.timestamp)
         txt = txt.replace("${Preis}",self.price)
         txt = txt.replace("${Laden}",self.laden)
         txt = txt.replace("${Content}",self.content.strip())
         txt = txt.replace("${Source}",self.source)
+        txt = txt.replace("${COUNT}",self.count)
         #print(txt)
         return(txt)
-    def generate_gedanken(self):
-    	message = "{{Gedanken|title="+self.title+"|\n"+self.content+"}}"
-    	#print(message)
-    	return message
     
     def generate_general(self):
         #print(self.title + "::generate_kochen")
@@ -677,22 +633,6 @@ class DiaryBox:
         message = self.header+self.content+"}}"
         #print(message)
         return message
-    def generate_lesen(self):
-        self.content = self.precontent + self.content
-
-        message = self.header+self.content+ self.footer
-        print(message)
-        return message
-    def generate_meeting(self):
-    	message = self.header+self.content+"}}"
-    	print(message)
-    	return message
-    def generate_migraene(self):
-        if self.media != "":
-            self.content = self.internalImage() + self.content
-        message = self.header+self.content+self.footer
-        #print(message)
-        return message
     def generate_photo(self):
         message=""
         if self.echo==True:
@@ -709,55 +649,10 @@ class DiaryBox:
         img_name = date_string + "_" + "g-" +self.title.replace(" ", "_")+".jpg"
         #print(img_name)
         return message
-    def generate_podcast(self):
-        #print(self.media)
-        if self.photo:
-            img_name = self.date_string+"_"+self.title.replace(" ", "_")+ self.count + ".jpg"
-            #print("Upload " + img_name)
-            if self.media:
-                self.client.download_media(self.media,"./test.jpg")
-                wiki = Wiki()
-                wiki.upload_file("./test.jpg",img_name)
-                self.content = self.content + "{{InternalImagePortrait|file={{#var:date}}_"+self.title.replace(" ", "_")+self.count+".jpg}}\n"
-        message = self.header +self.content+self.footer
-
-        print(message)
-        return message
-    def generate_reise(self):
-        if self.media != "":
-            self.content = self.internalImage() + self.content
-        message = self.header +self.content+ self.footer
-        print(message)
-        return message
-    def generate_song(self):
-        if self.media != "":
-            self.content = self.internalImage() + self.content
-        message = self.header+self.content+self.footer
-        print(message)
-        return message
-    def generate_sport(self):
-        if self.media != "":
-            self.content = self.internalImage() + self.content
-        message = self.header+self.content+self.footer
-        print(message)
-        return message
-    def generate_spaziergang(self):
-        if self.media != "":
-            self.content = self.internalImage() + self.content
-        self.content = self.content + self.internalImage()
-        message = self.header+self.content+self.footer
-        print(message)
-        return message
     def generate_tag(self):
     	message = " |Has "+self.title + "\n"
     	#print(message)
     	return message
-    def generate_video(self):
-    	self.content = self.content +self.internalImage()
-    	message = self.header+self.content+"}}"
-    	print(message)
-    	return message
-
     def get_time(self):
         return(self.time)
 

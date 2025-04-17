@@ -69,7 +69,7 @@ class TelegramMessageJSON:
 		
 		self.date = message["date"]
 		self.date = datetime.strptime(self.date,'%Y-%m-%dT%H:%M:%S')
-		self.id = message["id"]
+		self.id = f"{message["chat_id"]}_{message['id']}"
 		self.text = message["message"]
 		self.message = message
 		self.media = message["media"]

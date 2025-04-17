@@ -1,6 +1,6 @@
-{{Gastro|price={{#vardefineecho:price|${Preis}}}|title={{#vardefineecho:laden|${Laden}}}|
+{{Gastro|id=${ID}|timestamp=${TIMESTAMP}|price={{#vardefineecho:price|${Preis}}}|title={{#vardefineecho:laden|${Laden}}}|
 ${Content}
-{{InternalImage|file={{#var:date}}_{{#var:laden}}.jpg}}
+{{InternalImage|file={{#var:date}}_{{#var:laden}}${COUNT}.jpg}}
 {{#subobject:
  |Has date = {{#var:date}}
  |Has rechnung = Ausgabe
